@@ -12,7 +12,6 @@ class Board:
     @staticmethod
     def _make_board(seed: int) -> list[list[str]]:
         random.seed(seed)
-        print(f"Board Seed: {seed}")
 
         trait_keys = list(config.TILE_TRAITS.keys())
         trait_weights = [weight for _, weight in config.TILE_TRAITS.values()]

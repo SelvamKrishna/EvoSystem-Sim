@@ -24,7 +24,7 @@ class Token:
 
 
 class Player:
-    def __init__(self, token_count: int, player_id: int) -> None:
+    def __init__(self, player_id: int) -> None:
         self.id = player_id
         self.tokens: list[Token] = []
 

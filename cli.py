@@ -18,12 +18,12 @@ def get_cli_args() -> Arguments:
     args = sys.argv
     for arg in args:
         if arg.startswith("s="):
-            seed = int(arg.strip("s="))
+            seed = int(arg.removeprefix("s="))
 
         if arg.startswith("p="):
-            player_count = int(arg.strip("p="))
+            player_count = int(arg.removeprefix("p="))
 
         if arg.startswith("n="):
-            player_token_count = int(arg.strip("n="))
+            player_token_count = int(arg.removeprefix("n="))
 
     return Arguments(seed, player_count, player_token_count)
