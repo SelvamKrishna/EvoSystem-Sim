@@ -15,18 +15,21 @@ class Token:
         PADDING: int = -3
         HALF_CELL_SIZE: int = config.CELL_SIZE // 2
 
+        new_color = list(color)
+        new_color[3] = 50
+
         rl.DrawCircle(
             self.x * config.CELL_SIZE + HALF_CELL_SIZE,
             self.y * config.CELL_SIZE + HALF_CELL_SIZE,
             HALF_CELL_SIZE + PADDING,
-            color,
+            new_color,
         )
-
 
 class Player:
     def __init__(self, player_id: int) -> None:
         self.id = player_id
         self.tokens: list[Token] = []
+        self.captured: int = 0
 
     def draw(self) -> None:
         for token in self.tokens:
