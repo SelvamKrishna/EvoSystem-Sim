@@ -6,9 +6,6 @@ assert BOARD_SIZE > 0
 TILE_COUNT: int = BOARD_SIZE * BOARD_SIZE
 assert TILE_COUNT > 0
 
-PLAYER_COUNT: int = 4
-assert PLAYER_COUNT in range(2, 5)  # [2 | 3 | 4] players
-
 PLAYER_COLOR: tuple = (
     colors.RED,  # player 1
     colors.BLUE,  # player 2

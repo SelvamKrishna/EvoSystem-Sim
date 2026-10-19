@@ -1,29 +1,28 @@
-import time
-
 import raylib as rl
 
+import cli
 import config
-from board import Board
+from game import Game
 
-SEED = time.time_ns()
-SEED = 1792297318392815100
 
 def main() -> None:
     rl.InitWindow(config.WINDOW_SIZE, config.WINDOW_SIZE, b"EvoSystem-Sim")
     rl.SetTargetFPS(60)
 
-    board = Board(SEED)
+    args = cli.get_cli_args()
+    game = Game(args)
 
     while not rl.WindowShouldClose():
+        game.update()
+
         rl.BeginDrawing()
         rl.ClearBackground(rl.WHITE)
 
-        board.draw()
+        game.draw()
         rl.EndDrawing()
 
         if rl.IsKeyPressed(rl.KEY_S):
             rl.TakeScreenshot(b"screenshot.png")
-
 
     rl.CloseWindow()
 
