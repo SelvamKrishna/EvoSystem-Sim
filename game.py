@@ -1,5 +1,6 @@
+import time
+
 import raylib as rl
-from raylib import colors
 
 import config
 from board import Board
@@ -14,6 +15,7 @@ class Game:
         self.current_player_id: int = 0
         self.game_state: bool = False  # false: setup, true: play
         self.args = args
+        self.round_count = 0
 
         self.selected_token: Token | None = None
 
@@ -111,6 +113,8 @@ class Game:
     def update(self) -> None:
         if not self.game_state:
             self.game_state = self._setup_complete()
+            if self.game_state == True:
+                print(f"Time: {time.time()}")
 
         if self.game_state:
             self.play_mode()
@@ -121,7 +125,15 @@ class Game:
             self.current_player_id = (
                 self.current_player_id + 1
             ) % self.args.player_count
+            self.round_count += 1
             print(f"PLAY: Player {self.current_player_id + 1}'s turn")
+            print(f"PLAY: Round {self.round_count}")
+
+        if self.round_count > 36 or rl.IsKeyPressed(rl.KEY_ESCAPE):
+            self.quit()
+
+    def quit(self) -> None:
+        rl.CloseWindow()
 
     def draw(self) -> None:
         self.board.draw()

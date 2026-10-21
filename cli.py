@@ -22,6 +22,7 @@ def get_cli_args() -> Arguments:
 
         if arg.startswith("p="):
             player_count = int(arg.removeprefix("p="))
+            assert player_count in range(2, 5)
 
         if arg.startswith("n="):
             player_token_count = int(arg.removeprefix("n="))

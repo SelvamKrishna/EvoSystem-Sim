@@ -1,0 +1,19 @@
+TIME: 20.10.26 (12:46)
+SEED: 1792470238436505900
+PLAYER: 2, 3
+DESC: Very Balanced
+
+OBSERVATION:
+    - The game is very stagnant for the most part
+---
+
+TIME: 20.10.26 (13:31)
+SEED: 1792473145066050200
+PLAYER: 3
+DESC: Tested with split
+
+OBSERVATION:
+The 'split' tile adds variety into the game
+Player with only one tile left is in a clear disadvantage
+    - Make a way for the player with only one tile to play and give a comeback (potentially)
+---
