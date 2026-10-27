@@ -3,7 +3,7 @@ import time
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(frozen=True)
 class Arguments:
     seed: int
     player_count: int

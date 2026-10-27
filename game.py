@@ -16,6 +16,8 @@ class Game:
         self.game_state: bool = False  # false: setup, true: play
         self.args = args
         self.round_count = 0
+        self._is_running = True
+        self._start_time: float
 
         self.selected_token: Token | None = None
 
@@ -24,6 +26,9 @@ class Game:
         print(f"Player Count: {args.player_count}")
         print(f"Total Tokens: {args.player_token_count}")
         print("---")
+
+    def is_running(self) -> bool:
+        return not rl.WindowShouldClose() and self._is_running
 
     def _mouse_tile(self) -> tuple[int, int]:
         return (
@@ -70,6 +75,7 @@ class Game:
         self.players[player_id].tokens.append(token)
 
     def _remove_collision(self, x: int, y: int) -> list[Token]:
+
         captured: list[Token] = []
         for i in range(self.args.player_count):
             if i == self.current_player_id:
@@ -114,7 +120,7 @@ class Game:
         if not self.game_state:
             self.game_state = self._setup_complete()
             if self.game_state == True:
-                print(f"Time: {time.time()}")
+                self._start_time = time.time()
 
         if self.game_state:
             self.play_mode()
@@ -133,7 +139,9 @@ class Game:
             self.quit()
 
     def quit(self) -> None:
-        rl.CloseWindow()
+        self._is_running = False
+        total_time = time.time() - self._start_time
+        print(f"Time Played: {total_time:4}s")
 
     def draw(self) -> None:
         self.board.draw()
@@ -143,8 +151,7 @@ class Game:
                 (
                     self.selected_token.x * config.CELL_SIZE,
                     self.selected_token.y * config.CELL_SIZE,
-                    config.CELL_SIZE,
-                    config.CELL_SIZE,
+                    config.CELL_SIZE, config.CELL_SIZE,
                 ),
                 8,
                 config.PLAYER_COLOR[self.current_player_id],

@@ -17,3 +17,6 @@ The 'split' tile adds variety into the game
 Player with only one tile left is in a clear disadvantage
     - Make a way for the player with only one tile to play and give a comeback (potentially)
 ---
+
+SEED: 1792734902765636800
+SEED: 1792986560840548700

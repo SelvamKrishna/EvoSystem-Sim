@@ -12,7 +12,7 @@ def main() -> None:
     args = cli.get_cli_args()
     game = Game(args)
 
-    while not rl.WindowShouldClose():
+    while game.is_running():
         game.update()
 
         rl.BeginDrawing()

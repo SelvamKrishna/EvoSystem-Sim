@@ -21,16 +21,24 @@ def main() -> None:
         game.draw()
         for i in range(4):
             rl.DrawRectangle(
-                i * TOKEN_SET_DIMENSION[0],
-                config.WINDOW_SIZE,
-                *TOKEN_SET_DIMENSION,
-                config.PLAYER_COLOR[i]
-            )
+                i * TOKEN_SET_DIMENSION[0], config.WINDOW_SIZE,
+                *TOKEN_SET_DIMENSION, config.PLAYER_COLOR[i])
+
+            rl.DrawLineDashed(
+                ((i * TOKEN_SET_DIMENSION[0]) + (TOKEN_SET_DIMENSION[0] // 2), config.WINDOW_SIZE),
+                ((i * TOKEN_SET_DIMENSION[0]) + (TOKEN_SET_DIMENSION[0] // 2), WINDOW_DIMENSION[1]), 3, 2, rl.BLACK)
+
+        rl.DrawLineDashed(
+            (0, config.WINDOW_SIZE + (TOKEN_SET_DIMENSION[1] // 3)),
+            (WINDOW_DIMENSION[1], config.WINDOW_SIZE + (TOKEN_SET_DIMENSION[1] // 3)), 3, 2, rl.BLACK)
+
+        rl.DrawLineDashed(
+            (0, config.WINDOW_SIZE + (TOKEN_SET_DIMENSION[1] // 3) * 2),
+            (WINDOW_DIMENSION[1], config.WINDOW_SIZE + (TOKEN_SET_DIMENSION[1] // 3) * 2), 3, 2, rl.BLACK)
 
         rl.EndDrawing()
 
-        if rl.IsKeyPressed(rl.KEY_S):
-            rl.TakeScreenshot(b"board_print.png")
+        _ = rl.IsKeyPressed(rl.KEY_S) and rl.TakeScreenshot(b"board_print.png")
 
     rl.CloseWindow()
 
