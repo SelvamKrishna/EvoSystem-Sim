@@ -135,7 +135,7 @@ class Game:
             print(f"PLAY: Player {self.current_player_id + 1}'s turn")
             print(f"PLAY: Round {self.round_count}")
 
-        if self.round_count > 36 or rl.IsKeyPressed(rl.KEY_ESCAPE):
+        if self.round_count >= self.args.player_count * 12 or rl.IsKeyPressed(rl.KEY_ESCAPE):
             self.quit()
 
     def quit(self) -> None:
