@@ -1,22 +1,10 @@
-TIME: 20.10.26 (12:46)
-SEED: 1792470238436505900
-PLAYER: 2, 3
-DESC: Very Balanced
+seed: 1793765648056172500
 
-OBSERVATION:
-    - The game is very stagnant for the most part
----
-
-TIME: 20.10.26 (13:31)
-SEED: 1792473145066050200
-PLAYER: 3
-DESC: Tested with split
-
-OBSERVATION:
-The 'split' tile adds variety into the game
-Player with only one tile left is in a clear disadvantage
-    - Make a way for the player with only one tile to play and give a comeback (potentially)
----
-
-SEED: 1792734902765636800
-SEED: 1792986560840548700
+CENTER_BIAS: float = 10.0
+TILE_CONFIG: dict[str, TraitAttribute] = {
+    "": TraitAttribute(5),
+    "attack": TraitAttribute(10, (30, 20, 10)),
+    "health": TraitAttribute(5, (30, 20, 5)),
+    "speed": TraitAttribute(10, (30, 20, 10)),
+    "split": TraitAttribute(1),
+}

@@ -15,30 +15,38 @@ class Board:
         rng = random.Random(seed)
         print(f"Board Seed: {seed}")
 
+        CENTER = config.BOARD_SIZE / 2
         trait_keys = list(config.TILE_CONFIG.keys())
         trait_weights = [attrib.weight for attrib in config.TILE_CONFIG.values()]
         board: list[list[str]] = []
+        weight_board: list[list[float]] = []
 
         for y in range(config.BOARD_SIZE):
             row: list[str] = []
+            weight_row: list[float] = []
 
             for x in range(config.BOARD_SIZE):
                 tile_trait = rng.choices(trait_keys, trait_weights)[0]
+
                 tier_weight = config.TILE_CONFIG[tile_trait].tier_weight
+                magnitude = config.CENTER_BIAS * ((x - CENTER + 0.5) ** 2 + (y - CENTER + 0.5) ** 2) + 1
+                weight_row.append(magnitude)
 
                 if tier_weight is None:
                     row.append(tile_trait)
                     continue
 
-                mag_sq = (x ** 2 + y ** 2) + 1 * config.CENTER_BIAS
-                tile_tier = rng.choices([1, 2, 3], [weight * mag_sq for weight in tier_weight])[0]
+                tile_tier = rng.choices([1, 2, 3], [weight / magnitude for weight in tier_weight])[0]
                 row.append(f"{tile_trait}-{tile_tier}")
 
+            weight_board.append(weight_row)
             board.append(row)
 
-        for y in range(config.BOARD_SIZE):
-            for x in range(config.BOARD_SIZE):
-                pass
+        for r in weight_board:
+            for x in r:
+                print(f"{int(x)}, ", end="")
+            print()
+
         return board
 
     @staticmethod

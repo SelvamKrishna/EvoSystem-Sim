@@ -15,17 +15,18 @@ PLAYER_COLOR: tuple = (
     colors.YELLOW,  # player 4
 )
 
-CENTER_BIAS: float = 0.6
 
 @dataclass
 class TraitAttribute:
     weight: int
     tier_weight: None | tuple[int, int, int] = None
 
+
+CENTER_BIAS: float = 10.0
 TILE_CONFIG: dict[str, TraitAttribute] = {
-    "": TraitAttribute(10),
+    "": TraitAttribute(5),
     "attack": TraitAttribute(10, (30, 20, 10)),
-    "health": TraitAttribute(10, (30, 20, 10)),
+    "health": TraitAttribute(5, (30, 20, 5)),
     "speed": TraitAttribute(10, (30, 20, 10)),
     "split": TraitAttribute(1),
 }

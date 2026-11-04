@@ -39,6 +39,7 @@ def main() -> None:
         rl.EndDrawing()
 
         _ = rl.IsKeyPressed(rl.KEY_S) and rl.TakeScreenshot(b"board_print.png")
+        _ = rl.IsKeyPressed(rl.KEY_P) and print(game.board.board)
 
     rl.CloseWindow()
 
