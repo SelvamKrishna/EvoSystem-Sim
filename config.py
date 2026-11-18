@@ -31,6 +31,8 @@ TILE_CONFIG: dict[str, TraitAttribute] = {
     "split": TraitAttribute(1),
 }
 
+MAX_ROUND: int = 12
+
 # -- DO NOT CHANGE --
 
 WINDOW_SIZE: int = 794

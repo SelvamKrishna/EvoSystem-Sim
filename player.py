@@ -1,3 +1,5 @@
+import random
+
 import raylib as rl
 
 import config
@@ -30,7 +32,29 @@ class Player:
         self.id = player_id
         self.tokens: list[Token] = []
         self.captured: int = 0
+        self.energy: int = 10
+
+    def add_energy(self) -> None:
+        add_val = random.randrange(1, 6)
+        self.energy += add_val
+        print(f"-> Rolled: {add_val}")
+
+    def has_energy(self) -> bool:
+        return self.energy > 0
+
+    def consume_energy(self) -> None:
+        self.energy -= len(self.tokens)
+
+    def get_selection(self, tile_x, tile_y) -> Token | None:
+        for token in self.tokens:
+            if (token.x, token.y) == (tile_x, tile_y):
+                return token
+        return None
 
     def draw(self) -> None:
         for token in self.tokens:
             token.draw(config.PLAYER_COLOR[self.id])
+
+    def __repr__(self) -> str:
+        return f"Player {self.id}"
+

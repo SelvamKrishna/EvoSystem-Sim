@@ -30,11 +30,11 @@ def main() -> None:
 
         rl.DrawLineDashed(
             (0, config.WINDOW_SIZE + (TOKEN_SET_DIMENSION[1] // 3)),
-            (WINDOW_DIMENSION[1], config.WINDOW_SIZE + (TOKEN_SET_DIMENSION[1] // 3)), 3, 2, rl.BLACK)
+            (WINDOW_DIMENSION[0], config.WINDOW_SIZE + (TOKEN_SET_DIMENSION[1] // 3)), 3, 2, rl.BLACK)
 
         rl.DrawLineDashed(
             (0, config.WINDOW_SIZE + (TOKEN_SET_DIMENSION[1] // 3) * 2),
-            (WINDOW_DIMENSION[1], config.WINDOW_SIZE + (TOKEN_SET_DIMENSION[1] // 3) * 2), 3, 2, rl.BLACK)
+            (WINDOW_DIMENSION[0], config.WINDOW_SIZE + (TOKEN_SET_DIMENSION[1] // 3) * 2), 3, 2, rl.BLACK)
 
         rl.EndDrawing()
 

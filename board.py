@@ -76,18 +76,12 @@ class Board:
         for y in range(config.BOARD_SIZE):
             for x in range(config.BOARD_SIZE):
                 text = self.board[y][x]
-                text_color = Board._get_text_color(text)
                 rl.DrawRectangleLines(
-                    x * config.CELL_SIZE,
-                    y * config.CELL_SIZE,
-                    config.CELL_SIZE,
-                    config.CELL_SIZE,
-                    colors.BLACK,
-                )
+                    x * config.CELL_SIZE, y * config.CELL_SIZE,
+                    config.CELL_SIZE, config.CELL_SIZE,
+                    colors.BLACK,)
                 rl.DrawText(
                     text.encode(),
                     x * config.CELL_SIZE + TEXT_PADDING,
                     y * config.CELL_SIZE + TEXT_PADDING,
-                    20,
-                    text_color,
-                )
+                    20, Board._get_text_color(text),)

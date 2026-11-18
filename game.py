@@ -1,6 +1,7 @@
 import time
 
 import raylib as rl
+from colorama import Fore
 
 import config
 from board import Board
@@ -19,6 +20,7 @@ class Game:
         self._is_running = True
         self._start_time: float
 
+        self.LAST_ROUND = self.args.player_count * config.MAX_ROUND
         self.selected_token: Token | None = None
 
         print("---")
@@ -30,7 +32,7 @@ class Game:
     def is_running(self) -> bool:
         return not rl.WindowShouldClose() and self._is_running
 
-    def _mouse_tile(self) -> tuple[int, int]:
+    def _get_mouse_tile(self) -> tuple[int, int]:
         return (
             min(rl.GetMouseX() // config.CELL_SIZE, config.BOARD_SIZE - 1),
             min(rl.GetMouseY() // config.CELL_SIZE, config.BOARD_SIZE - 1),
@@ -65,62 +67,80 @@ class Game:
         if len(self.players[player_id].tokens) >= self.args.player_token_count:
             return
 
-        tile_x, tile_y = self._mouse_tile()
+        tile_x, tile_y = self._get_mouse_tile()
 
         if self._is_occupied(tile_x, tile_y):
             return
 
         token = Token(tile_x, tile_y)
-        print(f"SETUP: Player {player_id + 1} added {token}")
+        print(f"{Fore.MAGENTA}SETUP:{Fore.RESET} Player {player_id + 1} added {token}")
         self.players[player_id].tokens.append(token)
 
-    def _remove_collision(self, x: int, y: int) -> list[Token]:
-
-        captured: list[Token] = []
+    def _take_colliding_token(self, x: int, y: int) -> Token | None:
         for i in range(self.args.player_count):
             if i == self.current_player_id:
                 continue
-            remaining: list[Token] = []
+
             for t in self.players[i].tokens:
-                if (t.x, t.y) == (x, y):
-                    captured.append(t)
-                else:
-                    remaining.append(t)
-            self.players[i].tokens = remaining
-        return captured
+                if (t.x, t.y) != (x, y):
+                    continue
+
+                self.players[i].tokens.remove(t)
+                return t
+
+        return None
 
     def play_mode(self) -> None:
         if not rl.IsMouseButtonPressed(rl.MOUSE_BUTTON_LEFT):
             return
 
-        tile_x, tile_y = self._mouse_tile()
+        tile_x, tile_y = self._get_mouse_tile()
+        player: Player = self.players[self.current_player_id]
 
-        # First click: select one of the current player's tokens.
-        if self.selected_token is None:
-            for token in self.players[self.current_player_id].tokens:
-                if (token.x, token.y) == (tile_x, tile_y):
-                    self.selected_token = token
-                    return
+        if not player.has_energy():
             return
 
-        # Second click: move there, capturing any opponents on the tile.
-        captured = self._remove_collision(tile_x, tile_y)
-        if captured:
-            self.players[self.current_player_id].captured += len(captured)
-            print(
-                f"PLAY: Player {self.current_player_id + 1} captured "
-                f"{len(captured)} token(s) from {[t for t in captured]}"
-            )
+        # 1st click: get the token selected by the player
+        if self.selected_token is None:
+            self.selected_token = player.get_selection(tile_x, tile_y)
+            return
 
+        # 2nd click: move the token to clicked position, resolve combat
+        if (self.selected_token.x == tile_x) and (self.selected_token.y == tile_y):
+            self.selected_token = None
+            return
+
+        captured = self._take_colliding_token(tile_x, tile_y)
+        if captured:
+            player.captured += 1
+            player.energy += 10
+            print(f"PLAY: Player {self.current_player_id + 1} captured {captured}")
+
+        player.energy -= 1
+        print(f"-> Energy: {player.energy}")
         self.selected_token.x = tile_x
         self.selected_token.y = tile_y
         self.selected_token = None
+
+    def _setup_round(self):
+        player = self.players[self.current_player_id]
+        print(f"PLAY: Round {self.round_count}")
+        print(f"PLAY: Player {self.current_player_id + 1}")
+        player.add_energy()
+        player.consume_energy()
+        print(f"-> Energy: {player.energy}")
+
+    def _next_round(self) -> None:
+        self.current_player_id = (self.current_player_id + 1) % self.args.player_count
+        self.round_count += 1
+        self._setup_round()
 
     def update(self) -> None:
         if not self.game_state:
             self.game_state = self._setup_complete()
             if self.game_state == True:
                 self._start_time = time.time()
+                self._setup_round()
 
         if self.game_state:
             self.play_mode()
@@ -128,14 +148,11 @@ class Game:
             self.setup_mode()
 
         if rl.IsKeyPressed(rl.KEY_ENTER):
-            self.current_player_id = (
-                self.current_player_id + 1
-            ) % self.args.player_count
-            self.round_count += 1
-            print(f"PLAY: Player {self.current_player_id + 1}'s turn")
-            print(f"PLAY: Round {self.round_count}")
+            self._next_round()
 
-        if self.round_count >= self.args.player_count * 12 or rl.IsKeyPressed(rl.KEY_ESCAPE):
+        if self.round_count >= self.args.player_count * 12 or rl.IsKeyPressed(
+            rl.KEY_ESCAPE
+        ):
             self.quit()
 
     def quit(self) -> None:
@@ -151,7 +168,8 @@ class Game:
                 (
                     self.selected_token.x * config.CELL_SIZE,
                     self.selected_token.y * config.CELL_SIZE,
-                    config.CELL_SIZE, config.CELL_SIZE,
+                    config.CELL_SIZE,
+                    config.CELL_SIZE,
                 ),
                 8,
                 config.PLAYER_COLOR[self.current_player_id],
