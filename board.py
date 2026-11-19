@@ -10,6 +10,8 @@ import config
 class Board:
     def __init__(self, seed: int) -> None:
         self.board: list[list[str]] = Board._load_board(Path("board_data.txt"))
+        self._TILE_TEXTURE: rl.Texture = rl.LoadTexture(b"tile texture.png")
+        self._TILE_TEXTURE_CELL = (self._TILE_TEXTURE.width // 3, self._TILE_TEXTURE.height // 4)
 
     @staticmethod
     def _load_board(file_path: Path) -> list[list[str]]:
@@ -95,15 +97,27 @@ class Board:
             colors.BLACK,
         )
 
-    @staticmethod
-    def _draw_tile_ex(text: str, x: int, y: int) -> None:
-        rl.DrawText(
-            text.encode(),
-            5 + x * config.CELL_SIZE,
-            5 + y * config.CELL_SIZE,
-            20,
-            Board._get_text_color(text),
-        )
+    def _draw_tile_ex(self, text: str, x: int, y: int) -> None:
+        texture_idx = [0, 3] if text == "split" else [1, 3]
+
+        if text.startswith("health"): texture_idx[1] = 0
+        if text.startswith("speed"): texture_idx[1] = 1
+        if text.startswith("attack"): texture_idx[1] = 2
+
+        if text.endswith("-1"): texture_idx[0] = 0
+        if text.endswith("-2"): texture_idx[0] = 1
+        if text.endswith("-3"): texture_idx[0] = 2
+
+        src_rect = (
+            texture_idx[0] * self._TILE_TEXTURE_CELL[0],
+            texture_idx[1] * self._TILE_TEXTURE_CELL[1],
+            *self._TILE_TEXTURE_CELL )
+
+        dst_rect = (
+            x * config.CELL_SIZE, y * config.CELL_SIZE,
+            config.CELL_SIZE, config.CELL_SIZE )
+
+        rl.DrawTexturePro(self._TILE_TEXTURE, src_rect, dst_rect, [0, 0], 0.0, colors.WHITE)
 
     def draw(self) -> None:
         for y in range(config.BOARD_SIZE):
