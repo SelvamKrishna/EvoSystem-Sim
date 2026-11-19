@@ -25,15 +25,17 @@ class TraitAttribute:
 CENTER_BIAS: float = 10.0
 TILE_CONFIG: dict[str, TraitAttribute] = {
     "": TraitAttribute(5),
-    "attack": TraitAttribute(10, (30, 20, 10)),
+    "attack": TraitAttribute(7, (30, 20, 10)),
     "health": TraitAttribute(5, (30, 20, 5)),
     "speed": TraitAttribute(10, (30, 20, 10)),
     "split": TraitAttribute(1),
 }
 
+
 MAX_ROUND: int = 12
 
 # -- DO NOT CHANGE --
 
-WINDOW_SIZE: int = 794
+WINDOW_SIZE: int = 800
+ENERGY_BAR: int = 44
 CELL_SIZE: int = WINDOW_SIZE // BOARD_SIZE

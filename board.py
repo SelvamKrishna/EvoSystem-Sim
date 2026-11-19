@@ -1,4 +1,5 @@
 import random
+from pathlib import Path
 
 import raylib as rl
 from raylib import colors
@@ -8,7 +9,15 @@ import config
 
 class Board:
     def __init__(self, seed: int) -> None:
-        self.board: list[list[str]] = Board._make_board(seed)
+        self.board: list[list[str]] = Board._load_board(Path("board_data.txt"))
+
+    @staticmethod
+    def _load_board(file_path: Path) -> list[list[str]]:
+        board: list[list[str]] = []
+        with file_path.open("r") as file:
+            for line in file.readlines():
+                board.append(line.split(' '))
+        return board
 
     @staticmethod
     def _make_board(seed: int) -> list[list[str]]:
@@ -29,14 +38,20 @@ class Board:
                 tile_trait = rng.choices(trait_keys, trait_weights)[0]
 
                 tier_weight = config.TILE_CONFIG[tile_trait].tier_weight
-                magnitude = config.CENTER_BIAS * ((x - CENTER + 0.5) ** 2 + (y - CENTER + 0.5) ** 2) + 1
+                magnitude = (
+                    config.CENTER_BIAS
+                    * ((x - CENTER + 0.5) ** 2 + (y - CENTER + 0.5) ** 2)
+                    + 1
+                )
                 weight_row.append(magnitude)
 
                 if tier_weight is None:
                     row.append(tile_trait)
                     continue
 
-                tile_tier = rng.choices([1, 2, 3], [weight / magnitude for weight in tier_weight])[0]
+                tile_tier = rng.choices(
+                    [1, 2, 3], [weight / magnitude for weight in tier_weight]
+                )[0]
                 row.append(f"{tile_trait}-{tile_tier}")
 
             weight_board.append(weight_row)
@@ -71,17 +86,28 @@ class Board:
     def __repr__(self) -> str:
         return "\n".join(" ".join(row) for row in self.board)
 
+    @staticmethod
+    def _draw_tile(x: int, y: int) -> None:
+        rl.DrawRectangleLines(
+            x * config.CELL_SIZE,
+            y * config.CELL_SIZE,
+            config.CELL_SIZE, config.CELL_SIZE,
+            colors.BLACK,
+        )
+
+    @staticmethod
+    def _draw_tile_ex(text: str, x: int, y: int) -> None:
+        rl.DrawText(
+            text.encode(),
+            5 + x * config.CELL_SIZE,
+            5 + y * config.CELL_SIZE,
+            20,
+            Board._get_text_color(text),
+        )
+
     def draw(self) -> None:
-        TEXT_PADDING = 5
         for y in range(config.BOARD_SIZE):
             for x in range(config.BOARD_SIZE):
                 text = self.board[y][x]
-                rl.DrawRectangleLines(
-                    x * config.CELL_SIZE, y * config.CELL_SIZE,
-                    config.CELL_SIZE, config.CELL_SIZE,
-                    colors.BLACK,)
-                rl.DrawText(
-                    text.encode(),
-                    x * config.CELL_SIZE + TEXT_PADDING,
-                    y * config.CELL_SIZE + TEXT_PADDING,
-                    20, Board._get_text_color(text),)
+                self._draw_tile(x, y)
+                self._draw_tile_ex(text, x, y)

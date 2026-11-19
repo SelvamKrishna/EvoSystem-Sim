@@ -27,12 +27,13 @@ class Token:
             new_color,
         )
 
+
 class Player:
     def __init__(self, player_id: int) -> None:
         self.id = player_id
         self.tokens: list[Token] = []
         self.captured: int = 0
-        self.energy: int = 10
+        self.energy: int = 25
 
     def add_energy(self) -> None:
         add_val = random.randrange(1, 6)
@@ -58,3 +59,8 @@ class Player:
     def __repr__(self) -> str:
         return f"Player {self.id}"
 
+
+# each players start with a total of 25 energy points;
+# each turn: player-energy - no. of tokens they have;
+# each move: player-energy -= 1;
+# attacking another player's token gives + 10 energy;

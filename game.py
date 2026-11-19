@@ -114,7 +114,7 @@ class Game:
         if captured:
             player.captured += 1
             player.energy += 10
-            print(f"PLAY: Player {self.current_player_id + 1} captured {captured}")
+            print(f"{Fore.CYAN}PLAY:{Fore.RESET} Player {self.current_player_id + 1} captured {captured}")
 
         player.energy -= 1
         print(f"-> Energy: {player.energy}")
@@ -124,8 +124,8 @@ class Game:
 
     def _setup_round(self):
         player = self.players[self.current_player_id]
-        print(f"PLAY: Round {self.round_count}")
-        print(f"PLAY: Player {self.current_player_id + 1}")
+        print(f"{Fore.CYAN}PLAY:{Fore.RESET} Round {self.round_count}")
+        print(f"{Fore.CYAN}PLAY:{Fore.RESET} Player {self.current_player_id + 1}")
         player.add_energy()
         player.consume_energy()
         print(f"-> Energy: {player.energy}")
